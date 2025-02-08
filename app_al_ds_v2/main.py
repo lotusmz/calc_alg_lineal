@@ -1,3 +1,5 @@
+import numpy as np
+
 class Matriz:
     """Matriz clase y manejo de operaciones"""
 
@@ -9,6 +11,18 @@ class Matriz:
     def __str__(self):
         """Convierte matriz a string para mostrarlo"""
         return '\n'.join([' '.join(map(str, fila)) for fila in self.datos])
+
+    def obtener_determinante(self):
+        """Obtiene el determinante de la matriz si es cuadrada y de tamaño válido"""
+        if self.filas != self.columnas:
+            raise ValueError("El determinante solo se puede calcular para matrices cuadradas")
+        if self.filas not in [2, 3, 4]:
+            raise ValueError("Solo se admite el cálculo del determinante para matrices de 2x2, 3x3 y 4x4")
+
+        try:
+            return round(np.linalg.det(np.array(self.datos)), 5)
+        except Exception as e:
+            raise ValueError(f"Error al calcular el determinante: {e}")
 
     def suma(self, other):
         """Suma de matrices"""
@@ -170,12 +184,22 @@ def menu_inicio():
         print("2. Restar matrices")
         print("3. Multiplicar matrices/escalares")
         print("4. Propiedades de multiplicación")
-        print("5. Exit")
+        print("5. Obtener determinante")
+        print("6. Exit")
 
         opcion = input("Seleccione una opción: ")
 
-        if opcion == '5':
+        if opcion == '6':
             break
+
+        if opcion == '5':
+            matriz = input_matriz()
+            try:
+                determinante = matriz.obtener_determinante()
+                print(f"El determinante de la matriz es: {determinante}")
+            except ValueError as e:
+                print(f"Error: {e}")
+            continue
 
         if opcion == '4':
             mostrar_propiedades()
