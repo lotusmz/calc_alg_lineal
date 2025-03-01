@@ -16,11 +16,17 @@ class Matriz:
         """Obtiene el determinante de la matriz si es cuadrada y de tamaño válido"""
         if self.filas != self.columnas:
             raise ValueError("El determinante solo se puede calcular para matrices cuadradas")
-        if self.filas not in [2, 3, 4]:
-            raise ValueError("Solo se admite el cálculo del determinante para matrices de 2x2, 3x3 y 4x4")
+
+        if self.filas == 1:
+            return self.datos[0][0]
 
         try:
-            return round(np.linalg.det(np.array(self.datos)), 5)
+            def submatriz(matriz, fila, columna):
+                return [[matriz[i][j] for j in range(len(matriz)) if j != columna] for i in range(len(matriz)) if
+                        i != fila]
+
+            return sum((-1) ** c * self.datos[0][c] * Matriz(self.filas - 1, self.columnas - 1,submatriz(self.datos, 0, c)).obtener_determinante() for c in range(self.columnas))
+
         except Exception as e:
             raise ValueError(f"Error al calcular el determinante: {e}")
 
@@ -185,12 +191,23 @@ def menu_inicio():
         print("3. Multiplicar matrices/escalares")
         print("4. Propiedades de multiplicación")
         print("5. Obtener determinante")
-        print("6. Exit")
+        print("6. Obtener inversa de una matriz")
+        print("7. Exit")
 
         opcion = input("Seleccione una opción: ")
 
-        if opcion == '6':
+        if opcion == '7':
             break
+
+        if opcion == '6':
+            matriz = input_matriz()
+            try:
+                inversa = matriz.obtener_inversa()
+                print("La inversa de la matriz es:")
+                print(inversa)
+            except ValueError as e:
+                print(f"Error: {e}")
+            continue
 
         if opcion == '5':
             matriz = input_matriz()
