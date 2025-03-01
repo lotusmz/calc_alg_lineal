@@ -30,6 +30,25 @@ class Matriz:
         except Exception as e:
             raise ValueError(f"Error al calcular el determinante: {e}")
 
+    def obtener_inversa(self):
+        """Obtiene la inversa de la matriz si es cuadrada y su determinante no es cero"""
+        try:
+            determinante = self.obtener_determinante()
+            if determinante == 0:
+                raise ValueError("La matriz no tiene inversa porque su determinante es 0")
+        except ValueError as e:
+            raise ValueError(f"Error al calcular la inversa: {e}")
+
+        try:
+            n = self.filas
+            adjunta = [[(-1) ** (i + j) * Matriz(n - 1, n - 1, [fila[:j] + fila[j + 1:] for fila in (
+                        self.datos[:i] + self.datos[i + 1:])]).obtener_determinante() for j in range(n)] for i in
+                       range(n)]
+            inversa = [[adjunta[j][i] / determinante for j in range(n)] for i in range(n)]
+            return Matriz(n, n, inversa)
+        except Exception as e:
+            raise ValueError(f"Error al calcular la inversa: {e}")
+
     def suma(self, other):
         """Suma de matrices"""
         if self.filas != other.filas or self.columnas != other.columnas:
